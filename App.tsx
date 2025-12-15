@@ -36,6 +36,15 @@ const projects: Project[] = [
     tags: ["Node.js", "React.js", "DaisyUI"],
     imageUrl: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&q=80&w=1000",
     bgGradient: "bg-gradient-to-br from-[#DD2476] via-[#FF512F] to-[#DD2476]"
+  },
+  {
+    id: 4,
+    title: "POS System",
+    subtitle: "Retail Point of Sale Interface",
+    metric: "Real-time Sync",
+    tags: ["React.js", "Tailwind", "Redux"],
+    imageUrl: "https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&q=80&w=2000",
+    bgGradient: "bg-gradient-to-br from-[#11998e] via-[#38ef7d] to-[#11998e]"
   }
 ];
 

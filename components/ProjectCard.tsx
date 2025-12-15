@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Project } from '../types';
-import { Plus, ArrowRight, Activity, Layers } from 'lucide-react';
+import { ArrowRight, Activity, Layers } from 'lucide-react';
 
 interface ProjectCardProps {
   project: Project;
@@ -48,7 +48,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
         rotateY,
         transformStyle: "preserve-3d",
       }}
-      className={`relative h-[450px] w-full rounded-[30px] p-8 cursor-pointer group shadow-2xl hover:shadow-[0_30px_60px_-10px_rgba(0,0,0,0.6)] transition-shadow duration-300 overflow-hidden bg-gray-900`}
+      className={`relative h-[500px] w-full rounded-[24px] p-6 cursor-pointer group shadow-2xl hover:shadow-[0_30px_60px_-10px_rgba(0,0,0,0.6)] transition-shadow duration-300 overflow-hidden bg-gray-900 border border-white/10`}
     >
       {/* Background Image Layer */}
       {project.imageUrl && (
@@ -56,67 +56,64 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
           <img 
             src={project.imageUrl} 
             alt={project.title} 
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70" 
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60" 
           />
         </div>
       )}
 
       {/* Gradient Overlay for Tinting */}
-      <div className={`absolute inset-0 z-0 opacity-80 mix-blend-multiply ${project.bgGradient}`} />
-
+      <div className={`absolute inset-0 z-0 opacity-90 mix-blend-multiply ${project.bgGradient}`} />
+      
       {/* Dark Gradient from Bottom for Text Readability */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent opacity-90" />
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-transparent via-black/20 to-black/95 opacity-90" />
 
-      {/* Decorative Grid/Noise Overlay */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none z-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.2),transparent_70%)]" />
+      {/* Decorative Noise Overlay */}
       <div className="absolute inset-0 opacity-10 pointer-events-none z-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
 
-      <div style={{ transform: "translateZ(20px)", transformStyle: "preserve-3d" }} className="flex flex-col h-full justify-between relative z-10">
+      <div style={{ transform: "translateZ(20px)", transformStyle: "preserve-3d" }} className="flex flex-col h-full relative z-10 justify-between">
         
-        {/* Header */}
+        {/* Header: Icon & Link */}
         <div className="flex justify-between items-start">
-            <div>
-                <h3 className="text-white/80 font-mono text-sm tracking-widest uppercase shadow-black drop-shadow-sm">Project</h3>
-                <div className="h-0.5 w-8 bg-white/50 mt-1" />
+            <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-lg group-hover:bg-white/20 transition-colors">
+                <Layers size={28} className="text-white" />
             </div>
-            <div className="flex items-center gap-2 text-white/90 font-mono text-sm">
-                <span className="drop-shadow-md group-hover:underline decoration-white/50 underline-offset-4 transition-all">View Details</span>
-                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-xs backdrop-blur-sm group-hover:bg-white group-hover:text-black transition-colors">
-                    <ArrowRight size={14} />
-                </div>
+            
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/20 border border-white/10 backdrop-blur-md hover:bg-white/10 transition-colors group/btn">
+                <span className="text-xs font-semibold text-white/90">View</span>
+                <ArrowRight size={14} className="text-white group-hover/btn:translate-x-1 transition-transform" />
             </div>
         </div>
 
-        {/* Abstract Centerpiece */}
-        <motion.div 
-            style={{ 
-                transform: "translateZ(60px)",
-            }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex flex-col items-center justify-center text-center"
-        >
-            <div className="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center mb-4 shadow-[0_0_30px_rgba(255,255,255,0.2)] group-hover:scale-110 transition-transform duration-500">
-                <Layers size={40} className="text-white opacity-90" />
-            </div>
-            <h4 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60 drop-shadow-lg tracking-tight leading-tight">
+        {/* Middle Content: Title & Subtitle */}
+        <div className="mt-auto mb-8 pl-1">
+            <motion.h3 style={{ transform: "translateZ(40px)" }} className="text-4xl font-bold text-white mb-3 leading-tight tracking-tight">
                 {project.title}
-            </h4>
-        </motion.div>
+            </motion.h3>
+            <motion.p style={{ transform: "translateZ(30px)" }} className="text-gray-200 font-medium text-sm max-w-[95%] leading-relaxed">
+                {project.subtitle}
+            </motion.p>
+        </div>
 
-        {/* Footer */}
-        <div className="flex justify-between items-end mt-auto" style={{ transform: "translateZ(30px)" }}>
-            <div className="max-w-[70%]">
-                <p className="text-white/90 text-sm font-medium leading-tight drop-shadow-md mb-3">{project.subtitle}</p>
-                <div className="flex gap-2 flex-wrap">
-                    {project.tags.slice(0, 3).map(tag => (
-                        <span key={tag} className="text-[10px] bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full text-white font-semibold border border-white/20 shadow-sm">{tag}</span>
-                    ))}
-                </div>
+        {/* Footer: Tags & Metric */}
+        <div style={{ transform: "translateZ(30px)" }} className="pt-5 border-t border-white/10 flex items-end justify-between gap-4">
+            
+            {/* Tags - Pill shape with border */}
+            <div className="flex flex-wrap gap-2 flex-1 content-end">
+                {project.tags.slice(0, 3).map(tag => (
+                    <span key={tag} className="px-3 py-1.5 rounded-full border border-white/20 bg-black/40 backdrop-blur-sm text-[11px] font-bold text-gray-200 group-hover:border-white/40 transition-colors tracking-wide">
+                        {tag}
+                    </span>
+                ))}
             </div>
-            <div className="text-right">
-                <p className="text-white/80 text-xs mb-1 flex items-center justify-end gap-1 drop-shadow-md">
-                    <Activity size={12} /> Metric
-                </p>
-                <p className="text-xl font-bold text-white drop-shadow-md font-mono">{project.metric}</p>
+
+            {/* Metric */}
+            <div className="text-right shrink-0 flex flex-col items-end justify-end h-full">
+                 <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider flex items-center justify-end gap-1.5 mb-1.5">
+                    <Activity size={12} className="text-cyan-400" /> Metric
+                 </p>
+                 <div className="text-lg font-bold text-white leading-tight max-w-[120px]">
+                    {project.metric}
+                 </div>
             </div>
         </div>
 
