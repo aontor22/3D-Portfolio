@@ -1,0 +1,7 @@
+{
+  "name": "UdoyFolio: Interactive Portfolio",
+  "description": "A futuristic, interactive portfolio for Udoy Chowdhury featuring 3D visualizations, AI-powered trivia, and retro arcade games.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
