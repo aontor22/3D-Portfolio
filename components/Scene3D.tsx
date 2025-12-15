@@ -3,28 +3,6 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Sphere, MeshDistortMaterial, Stars, Float } from '@react-three/drei';
 import * as THREE from 'three';
 
-// Add type definitions for Three.js elements to resolve JSX errors
-// We augment both global JSX and React.JSX to ensure compatibility across different TS configurations
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      ambientLight: any;
-      directionalLight: any;
-      pointLight: any;
-    }
-  }
-}
-
-declare module 'react' {
-  namespace JSX {
-    interface IntrinsicElements {
-      ambientLight: any;
-      directionalLight: any;
-      pointLight: any;
-    }
-  }
-}
-
 const AnimatedShape = () => {
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHover] = useState(false);

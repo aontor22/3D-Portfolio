@@ -7,7 +7,7 @@ import SkillsSection from './components/SkillsSection';
 import LightningEffect from './components/LightningEffect';
 import { Project } from './types';
 import { motion } from 'framer-motion';
-import { ChevronDown, Code, Palette, Cpu, Terminal, Mail, Phone, Linkedin, Github, Moon, Sun } from 'lucide-react';
+import { ChevronDown, Code, Palette, Cpu, Terminal, Mail, Linkedin, Github, Moon, Sun } from 'lucide-react';
 
 const projects: Project[] = [
   {
@@ -16,7 +16,7 @@ const projects: Project[] = [
     subtitle: "Full-Stack Medical Store & Prescription System",
     metric: "40% Faster Search",
     tags: ["React.js", "MongoDB", "Firebase"],
-    imageUrl: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=800",
+    imageUrl: "https://images.unsplash.com/photo-1631549916768-4119b2e5f926?auto=format&fit=crop&q=80&w=1979", 
     bgGradient: "bg-gradient-to-br from-[#021B79] via-[#0575E6] to-[#021B79]"
   },
   {
@@ -25,7 +25,7 @@ const projects: Project[] = [
     subtitle: "Java Swing Desktop Application",
     metric: "10k+ Records",
     tags: ["Java", "SQL", "MVC"],
-    imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800", 
+    imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=2070",
     bgGradient: "bg-gradient-to-br from-[#1A2980] via-[#26D0CE] to-[#1A2980]"
   },
   {
@@ -34,7 +34,7 @@ const projects: Project[] = [
     subtitle: "Full-Stack Restaurant Platform",
     metric: "50% Less Time",
     tags: ["Node.js", "React.js", "DaisyUI"],
-    imageUrl: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&q=80&w=800",
+    imageUrl: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&q=80&w=1000",
     bgGradient: "bg-gradient-to-br from-[#DD2476] via-[#FF512F] to-[#DD2476]"
   }
 ];
@@ -83,8 +83,8 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#030014] text-gray-900 dark:text-white transition-colors duration-300 selection:bg-cyan-500/30 selection:text-cyan-800 dark:selection:text-cyan-200">
       
-      {/* Lightning Effect (Visible in both, but clearer in dark mode) */}
-      <LightningEffect />
+      {/* Lightning Effect - Adapts to theme */}
+      <LightningEffect theme={isDarkMode ? 'dark' : 'light'} />
 
       {/* Navbar */}
       <nav className="fixed top-0 w-full z-40 bg-white/70 dark:bg-black/10 backdrop-blur-md border-b border-gray-200 dark:border-white/5 transition-colors duration-300">
@@ -104,7 +104,8 @@ const App: React.FC = () => {
             <div className="flex gap-4 items-center">
                 <button 
                   onClick={toggleTheme}
-                  className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 transition-colors"
+                  className="p-2 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 text-yellow-500 dark:text-cyan-300 transition-colors shadow-sm"
+                  aria-label="Toggle Theme"
                 >
                   {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                 </button>
@@ -131,17 +132,7 @@ const App: React.FC = () => {
                 transition={{ duration: 0.8 }}
                 className="z-10 flex flex-col items-start"
             >
-                {/* 3D Avatar Profile Image */}
-                <div className="mb-6 relative group">
-                     <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full blur opacity-30 dark:opacity-50 group-hover:opacity-60 dark:group-hover:opacity-100 transition-opacity animate-pulse"></div>
-                     <img 
-                        src="https://img.freepik.com/premium-photo/fun-3d-cartoon-casual-character-youth_962764-95.jpg?w=740" 
-                        alt="Udoy 3D Avatar"
-                        className="relative w-40 h-40 rounded-full border-4 border-white dark:border-white/20 object-cover shadow-2xl"
-                     />
-                </div>
-
-                <div className="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-cyan-600 dark:text-cyan-400 border border-cyan-600/30 dark:border-cyan-400/30 rounded-full bg-cyan-100 dark:bg-cyan-400/10">
+                <div className="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-cyan-700 dark:text-cyan-400 border border-cyan-600/30 dark:border-cyan-400/30 rounded-full bg-cyan-100 dark:bg-cyan-400/10">
                     B.Sc in CSE • Green University
                 </div>
                 <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6 text-gray-900 dark:text-white">
@@ -149,7 +140,7 @@ const App: React.FC = () => {
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-purple-600 dark:from-cyan-400 dark:to-purple-500">Udoy Chowdhury</span>
                 </h1>
                 <p className="text-gray-600 dark:text-gray-400 text-lg mb-8 max-w-lg leading-relaxed">
-                    Full-Stack Engineer & QA Specialist specializing in React.js, Java, and scalable system architectures. I build secure, optimized, and user-centric applications.
+                    Full-Stack Engineer & QA Specialist. I transform complex problems into sleek, interactive, and high-performance digital experiences.
                 </p>
                 <div className="flex flex-wrap gap-4">
                     <a href="#projects" className="px-8 py-3 bg-cyan-600 hover:bg-cyan-500 text-white rounded-full font-semibold transition-all shadow-lg hover:shadow-cyan-500/30">

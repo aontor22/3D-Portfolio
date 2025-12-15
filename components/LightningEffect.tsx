@@ -1,6 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 
-const LightningEffect: React.FC = () => {
+interface LightningEffectProps {
+  theme: 'dark' | 'light';
+}
+
+const LightningEffect: React.FC<LightningEffectProps> = ({ theme }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -45,16 +49,25 @@ const LightningEffect: React.FC = () => {
       ctx.clearRect(0, 0, w, h);
       
       // Random chance to spawn a bolt
-      if (Math.random() < 0.01) { // 1% chance per frame
+      if (Math.random() < 0.015) { // 1.5% chance per frame
         createBolt();
       }
 
-      bolts.forEach((bolt, index) => {
+      bolts.forEach((bolt) => {
         ctx.beginPath();
-        ctx.strokeStyle = `rgba(100, 200, 255, ${bolt.opacity})`;
+        // Adjust color based on theme
+        if (theme === 'dark') {
+            ctx.strokeStyle = `rgba(100, 200, 255, ${bolt.opacity})`;
+            ctx.shadowColor = 'rgba(0, 255, 255, 0.8)';
+            ctx.shadowBlur = 15;
+        } else {
+            // Darker bolts for light mode
+            ctx.strokeStyle = `rgba(100, 50, 255, ${bolt.opacity})`; 
+            ctx.shadowColor = 'rgba(140, 0, 255, 0.5)';
+            ctx.shadowBlur = 10;
+        }
+        
         ctx.lineWidth = 2;
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = 'rgba(0, 255, 255, 0.8)';
         
         ctx.moveTo(bolt.segments[0].x, bolt.segments[0].y);
         for (let i = 1; i < bolt.segments.length; i++) {
@@ -77,12 +90,13 @@ const LightningEffect: React.FC = () => {
       window.removeEventListener('resize', resize);
       cancelAnimationFrame(animId);
     };
-  }, []);
+  }, [theme]); // Re-run effect when theme changes
 
   return (
     <canvas 
       ref={canvasRef} 
-      className="fixed inset-0 pointer-events-none z-50 mix-blend-screen"
+      className="fixed inset-0 pointer-events-none z-50"
+      // Use normal blend mode for visibility in both themes, specific blending handled by colors
       style={{ filter: 'blur(0.5px)' }}
     />
   );
