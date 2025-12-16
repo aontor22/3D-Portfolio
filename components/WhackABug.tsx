@@ -20,6 +20,13 @@ const WhackABug: React.FC = () => {
     if (saved) setHighScore(parseInt(saved));
   }, []);
 
+  // End Game Logic Trigger
+  useEffect(() => {
+    if (timeLeft === 0 && isPlaying) {
+        endGame();
+    }
+  }, [timeLeft, isPlaying]);
+
   const startGame = () => {
     setScore(0);
     setTimeLeft(GAME_DURATION);
@@ -27,14 +34,9 @@ const WhackABug: React.FC = () => {
     setActiveHole(null);
     
     // Game Timer
+    if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = window.setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          endGame();
-          return 0;
-        }
-        return prev - 1;
-      });
+      setTimeLeft((prev) => Math.max(0, prev - 1));
     }, 1000);
 
     // Bug Spawning Loop
@@ -58,6 +60,7 @@ const WhackABug: React.FC = () => {
     if (timerRef.current) clearInterval(timerRef.current);
     if (bugIntervalRef.current) clearTimeout(bugIntervalRef.current);
     
+    // Update High Score - safely accesses current 'score' state due to effect/function scope
     setHighScore(prev => {
         const newHigh = Math.max(prev, score);
         localStorage.setItem('bugHighScore', newHigh.toString());
@@ -71,12 +74,7 @@ const WhackABug: React.FC = () => {
         if (timerRef.current) clearInterval(timerRef.current);
         if (bugIntervalRef.current) clearTimeout(bugIntervalRef.current);
     };
-  }, []); // Depend on score to update high score correctly if unmounted mid-game? No, score is in state.
-
-  // Fix for score closure issue in endGame if called from effect? 
-  // Actually, we update high score in endGame based on current render state, 
-  // but let's ensure we use the state updater if needed.
-  // Ideally, useEffect cleanup should just stop timers.
+  }, []);
 
   const handleWhack = (index: number) => {
     if (!isPlaying) return;

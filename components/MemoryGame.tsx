@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Atom, Database, Server, Cpu, Globe, Wifi, Lock, Code, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { Atom, Database, Server, Cpu, Globe, Wifi, Lock, Code, RefreshCw, CheckCircle2, Trophy } from 'lucide-react';
 
 // Card configuration
 const ICONS = [Atom, Database, Server, Cpu, Globe, Wifi, Lock, Code];
@@ -18,11 +18,24 @@ const MemoryGame: React.FC = () => {
   const [moves, setMoves] = useState(0);
   const [gameWon, setGameWon] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [bestScore, setBestScore] = useState<number>(0);
 
-  // Initialize Game
+  // Initialize Game & Load Score
   useEffect(() => {
+    const savedScore = localStorage.getItem('memoryBestScore');
+    if (savedScore) setBestScore(parseInt(savedScore));
     startNewGame();
   }, []);
+
+  // Watch for Win Condition to save Score
+  useEffect(() => {
+    if (gameWon) {
+        if (bestScore === 0 || moves < bestScore) {
+            setBestScore(moves);
+            localStorage.setItem('memoryBestScore', moves.toString());
+        }
+    }
+  }, [gameWon, moves, bestScore]);
 
   const startNewGame = () => {
     // Create pairs
@@ -75,7 +88,7 @@ const MemoryGame: React.FC = () => {
         setIsProcessing(false);
         
         // Check win condition
-        if (currentCards.filter(c => !c.isMatched).length <= 2) { // logic uses currentCards snapshot, so subtract matched
+        if (currentCards.filter(c => !c.isMatched).length <= 2) { 
              setGameWon(true);
         }
       }, 500);
@@ -96,7 +109,12 @@ const MemoryGame: React.FC = () => {
       <div className="text-center mb-6">
         <h2 className="text-3xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-indigo-600">System Restore</h2>
         <p className="text-gray-600 dark:text-gray-400 text-sm">Match the data blocks to restore the system.</p>
-        <div className="mt-2 text-cyan-600 dark:text-cyan-400 font-mono">Moves: {moves}</div>
+        <div className="flex gap-6 mt-2 justify-center font-mono text-sm">
+            <div className="text-cyan-600 dark:text-cyan-400 font-semibold">Moves: {moves}</div>
+            <div className="text-yellow-600 dark:text-yellow-400 font-bold flex items-center gap-1">
+                 <Trophy size={14} /> Best: {bestScore === 0 ? '-' : bestScore}
+            </div>
+        </div>
       </div>
 
       <div className="relative">

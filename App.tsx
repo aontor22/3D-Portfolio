@@ -5,9 +5,12 @@ import GameSection from './components/GameSection';
 import AIChatbot from './components/AIChatbot';
 import SkillsSection from './components/SkillsSection';
 import LightningEffect from './components/LightningEffect';
+import MouseTrail from './components/MouseTrail';
+import MatrixRain from './components/MatrixRain';
+import Typewriter from './components/Typewriter';
 import { Project } from './types';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { ChevronDown, Code, Palette, Cpu, Terminal, Mail, Linkedin, Github, Moon, Sun } from 'lucide-react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { ChevronDown, Code, Palette, Cpu, Terminal, Mail, Linkedin, Github, Moon, Sun, Binary } from 'lucide-react';
 
 const projects: Project[] = [
   {
@@ -63,6 +66,7 @@ const SectionTitle = ({ children, icon: Icon }: { children?: React.ReactNode, ic
 
 const App: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isMatrixMode, setIsMatrixMode] = useState(false);
   const { scrollY } = useScroll();
 
   // Parallax Values
@@ -99,11 +103,17 @@ const App: React.FC = () => {
     });
   };
 
+  const toggleMatrix = () => {
+    setIsMatrixMode(prev => !prev);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#030014] text-gray-900 dark:text-white transition-colors duration-300 selection:bg-cyan-500/30 selection:text-cyan-800 dark:selection:text-cyan-200 overflow-hidden relative">
       
-      {/* Lightning Effect - Adapts to theme */}
-      <LightningEffect theme={isDarkMode ? 'dark' : 'light'} />
+      {/* Interactive Backgrounds */}
+      <MouseTrail />
+      {isMatrixMode && <MatrixRain />}
+      {!isMatrixMode && <LightningEffect theme={isDarkMode ? 'dark' : 'light'} />}
 
       {/* Global Background Elements with Parallax */}
       <div className="fixed inset-0 pointer-events-none z-0">
@@ -133,6 +143,14 @@ const App: React.FC = () => {
                 <a href="#game" className="hover:text-cyan-600 dark:hover:text-white transition-colors text-cyan-600 dark:text-cyan-400">Playground</a>
             </div>
             <div className="flex gap-4 items-center">
+                <button 
+                  onClick={toggleMatrix}
+                  className={`p-2 rounded-full transition-colors shadow-sm ${isMatrixMode ? 'bg-green-500 text-black shadow-[0_0_15px_#22c55e]' : 'bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 text-gray-600 dark:text-cyan-300'}`}
+                  aria-label="Toggle Matrix Mode"
+                  title="Hacker Mode"
+                >
+                  <Binary size={20} />
+                </button>
                 <button 
                   onClick={toggleTheme}
                   className="p-2 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 text-yellow-500 dark:text-cyan-300 transition-colors shadow-sm"
@@ -176,8 +194,21 @@ const App: React.FC = () => {
                     Hello, I'm <br />
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-purple-600 dark:from-cyan-400 dark:to-purple-500">Udoy Chowdhury</span>
                 </h1>
+                
+                {/* Typewriter Effect Subtitle */}
+                <div className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 font-medium h-[40px] flex items-center">
+                    <span className="mr-2">I am a</span>
+                    <span className="text-cyan-600 dark:text-cyan-400 font-bold">
+                        <Typewriter 
+                            words={["Full-Stack Engineer", "QA Specialist", "Creative Developer", "Tech Enthusiast"]} 
+                            typingSpeed={80}
+                            deletingSpeed={40}
+                        />
+                    </span>
+                </div>
+                
                 <p className="text-gray-600 dark:text-gray-400 text-lg mb-8 max-w-lg leading-relaxed">
-                    Full-Stack Engineer & QA Specialist. I transform complex problems into sleek, interactive, and high-performance digital experiences.
+                    I transform complex problems into sleek, interactive, and high-performance digital experiences. Specializing in modern web tech and automated testing.
                 </p>
                 <div className="flex flex-wrap gap-4">
                     <a href="#projects" className="px-8 py-3 bg-cyan-600 hover:bg-cyan-500 text-white rounded-full font-semibold transition-all shadow-lg hover:shadow-cyan-500/30">
