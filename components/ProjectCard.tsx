@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Project } from '../types';
-import { ArrowRight, Activity, Layers } from 'lucide-react';
+import { ArrowRight, Activity, Layers, Github } from 'lucide-react';
 
 interface ProjectCardProps {
   project: Project;
@@ -72,15 +72,29 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
 
       <div style={{ transform: "translateZ(20px)", transformStyle: "preserve-3d" }} className="flex flex-col h-full relative z-10 justify-between">
         
-        {/* Header: Icon & Link */}
+        {/* Header: Icon & Actions */}
         <div className="flex justify-between items-start">
             <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-lg group-hover:bg-white/20 transition-colors">
                 <Layers size={28} className="text-white" />
             </div>
             
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/20 border border-white/10 backdrop-blur-md hover:bg-white/10 transition-colors group/btn">
-                <span className="text-xs font-semibold text-white/90">View</span>
-                <ArrowRight size={14} className="text-white group-hover/btn:translate-x-1 transition-transform" />
+            <div className="flex gap-2">
+                {project.repoUrl && (
+                    <a 
+                        href={project.repoUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center w-8 h-8 rounded-full bg-black/20 border border-white/10 backdrop-blur-md hover:bg-white/20 transition-colors text-white z-20"
+                        title="View Source Code"
+                        onClick={(e) => e.stopPropagation()} 
+                    >
+                        <Github size={16} />
+                    </a>
+                )}
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/20 border border-white/10 backdrop-blur-md hover:bg-white/10 transition-colors group/btn">
+                    <span className="text-xs font-semibold text-white/90">View</span>
+                    <ArrowRight size={14} className="text-white group-hover/btn:translate-x-1 transition-transform" />
+                </div>
             </div>
         </div>
 

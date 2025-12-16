@@ -6,7 +6,7 @@ import AIChatbot from './components/AIChatbot';
 import SkillsSection from './components/SkillsSection';
 import LightningEffect from './components/LightningEffect';
 import { Project } from './types';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { ChevronDown, Code, Palette, Cpu, Terminal, Mail, Linkedin, Github, Moon, Sun } from 'lucide-react';
 
 const projects: Project[] = [
@@ -17,7 +17,8 @@ const projects: Project[] = [
     metric: "40% Faster Search",
     tags: ["React.js", "MongoDB", "Firebase"],
     imageUrl: "https://images.unsplash.com/photo-1631549916768-4119b2e5f926?auto=format&fit=crop&q=80&w=1979", 
-    bgGradient: "bg-gradient-to-br from-[#021B79] via-[#0575E6] to-[#021B79]"
+    bgGradient: "bg-gradient-to-br from-[#021B79] via-[#0575E6] to-[#021B79]",
+    repoUrl: "https://github.com/aontor22"
   },
   {
     id: 2,
@@ -26,7 +27,8 @@ const projects: Project[] = [
     metric: "10k+ Records",
     tags: ["Java", "SQL", "MVC"],
     imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=2070",
-    bgGradient: "bg-gradient-to-br from-[#1A2980] via-[#26D0CE] to-[#1A2980]"
+    bgGradient: "bg-gradient-to-br from-[#1A2980] via-[#26D0CE] to-[#1A2980]",
+    repoUrl: "https://github.com/aontor22"
   },
   {
     id: 3,
@@ -35,7 +37,8 @@ const projects: Project[] = [
     metric: "50% Less Time",
     tags: ["Node.js", "React.js", "DaisyUI"],
     imageUrl: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&q=80&w=1000",
-    bgGradient: "bg-gradient-to-br from-[#DD2476] via-[#FF512F] to-[#DD2476]"
+    bgGradient: "bg-gradient-to-br from-[#DD2476] via-[#FF512F] to-[#DD2476]",
+    repoUrl: "https://github.com/aontor22"
   },
   {
     id: 4,
@@ -44,7 +47,8 @@ const projects: Project[] = [
     metric: "Real-time Sync",
     tags: ["React.js", "Tailwind", "Redux"],
     imageUrl: "https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&q=80&w=2000",
-    bgGradient: "bg-gradient-to-br from-[#11998e] via-[#38ef7d] to-[#11998e]"
+    bgGradient: "bg-gradient-to-br from-[#11998e] via-[#38ef7d] to-[#11998e]",
+    repoUrl: "https://github.com/aontor22"
   }
 ];
 
@@ -59,10 +63,16 @@ const SectionTitle = ({ children, icon: Icon }: { children?: React.ReactNode, ic
 
 const App: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const { scrollY } = useScroll();
+
+  // Parallax Values
+  const yHero1 = useTransform(scrollY, [0, 1000], [0, 300]);
+  const yHero2 = useTransform(scrollY, [0, 1000], [0, -200]);
+  const yGlobal = useTransform(scrollY, [0, 2000], [0, -100]);
+  const rotateGlobal = useTransform(scrollY, [0, 2000], [0, 45]);
 
   // Initialize Theme
   useEffect(() => {
-    // Check local storage or system preference
     const savedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
@@ -90,10 +100,22 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#030014] text-gray-900 dark:text-white transition-colors duration-300 selection:bg-cyan-500/30 selection:text-cyan-800 dark:selection:text-cyan-200">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#030014] text-gray-900 dark:text-white transition-colors duration-300 selection:bg-cyan-500/30 selection:text-cyan-800 dark:selection:text-cyan-200 overflow-hidden relative">
       
       {/* Lightning Effect - Adapts to theme */}
       <LightningEffect theme={isDarkMode ? 'dark' : 'light'} />
+
+      {/* Global Background Elements with Parallax */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+          <motion.div 
+            style={{ y: yGlobal, rotate: rotateGlobal }}
+            className="absolute top-[20%] right-[-10%] w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-[100px]" 
+          />
+          <motion.div 
+            style={{ y: yHero2, x: -50 }}
+            className="absolute bottom-[10%] left-[-10%] w-[500px] h-[500px] bg-cyan-500/5 rounded-full blur-[100px]" 
+          />
+      </div>
 
       {/* Navbar */}
       <nav className="fixed top-0 w-full z-40 bg-white/70 dark:bg-black/10 backdrop-blur-md border-b border-gray-200 dark:border-white/5 transition-colors duration-300">
@@ -130,11 +152,17 @@ const App: React.FC = () => {
 
       {/* Hero Section */}
       <section id="about" className="relative min-h-screen flex items-center pt-20 overflow-hidden">
-        {/* Abstract Background Gradients */}
-        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 pointer-events-none mix-blend-multiply dark:mix-blend-screen" />
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-cyan-600/20 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2 pointer-events-none mix-blend-multiply dark:mix-blend-screen" />
+        {/* Abstract Background Gradients with Parallax */}
+        <motion.div 
+            style={{ y: yHero1 }}
+            className="absolute top-0 left-0 w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 pointer-events-none mix-blend-multiply dark:mix-blend-screen" 
+        />
+        <motion.div 
+            style={{ y: yHero2 }}
+            className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-cyan-600/20 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2 pointer-events-none mix-blend-multiply dark:mix-blend-screen" 
+        />
 
-        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center w-full">
+        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center w-full relative z-10">
             <motion.div 
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -172,6 +200,7 @@ const App: React.FC = () => {
         </div>
 
         <motion.div 
+            style={{ opacity: useTransform(scrollY, [0, 200], [1, 0]) }}
             animate={{ y: [0, 10, 0] }}
             transition={{ repeat: Infinity, duration: 2 }}
             className="absolute bottom-10 left-1/2 -translate-x-1/2 text-gray-400 dark:text-gray-500"
@@ -181,23 +210,31 @@ const App: React.FC = () => {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="py-24 relative bg-white dark:bg-transparent transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-6">
+      <section id="projects" className="py-24 relative transition-colors duration-300">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
             <SectionTitle icon={Code}>Featured Projects</SectionTitle>
             <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-2xl">
                 A selection of my professional work, ranging from healthcare platforms to high-performance desktop applications.
             </p>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
-                {projects.map(project => (
-                    <ProjectCard key={project.id} project={project} />
+                {projects.map((project, index) => (
+                   <motion.div
+                      key={project.id}
+                      initial={{ opacity: 0, y: 50 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                   >
+                        <ProjectCard project={project} />
+                   </motion.div>
                 ))}
             </div>
         </div>
       </section>
 
       {/* Skills Section */}
-      <section id="skills" className="py-24 bg-gray-50 dark:bg-gradient-to-b dark:from-[#030014] dark:to-[#0a051e] transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+      <section id="skills" className="py-24 bg-gray-50 dark:bg-transparent transition-colors duration-300 relative">
+        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center relative z-10">
             <div>
                 <SectionTitle icon={Palette}>Technical Expertise</SectionTitle>
                 <p className="text-gray-600 dark:text-gray-400 mb-6 text-lg">
@@ -210,22 +247,34 @@ const App: React.FC = () => {
                         'Quality Assurance (Selenium, Postman)', 
                         'AI & Machine Learning (TensorFlow, OpenCV)'
                     ].map((item, i) => (
-                        <div key={i} className="flex items-center gap-3 p-4 bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/5 hover:border-cyan-500/50 transition-colors shadow-sm">
+                        <motion.div 
+                            key={i} 
+                            initial={{ x: -20, opacity: 0 }}
+                            whileInView={{ x: 0, opacity: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: i * 0.1 }}
+                            className="flex items-center gap-3 p-4 bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/5 hover:border-cyan-500/50 transition-colors shadow-sm"
+                        >
                             <div className="w-2 h-2 rounded-full bg-cyan-500" />
                             <span className="font-medium text-gray-800 dark:text-gray-200">{item}</span>
-                        </div>
+                        </motion.div>
                     ))}
                 </div>
             </div>
-            <div className="h-full">
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                className="h-full"
+            >
                 <SkillsSection />
-            </div>
+            </motion.div>
         </div>
       </section>
 
       {/* Game Section */}
       <section id="game" className="py-24 relative overflow-hidden bg-white dark:bg-transparent transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
             <div className="flex flex-col items-center mb-12">
                 <div className="p-3 bg-purple-600 rounded-lg shadow-lg mb-4">
                     <Cpu className="text-white" size={24} />
@@ -240,7 +289,7 @@ const App: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 border-t border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-black/40 transition-colors duration-300">
+      <footer className="py-12 border-t border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-black/40 transition-colors duration-300 relative z-10">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-gray-600 dark:text-gray-500 text-sm">
             <div className="mb-4 md:mb-0">
                 <p className="text-gray-900 dark:text-white font-semibold text-lg">Udoy Chowdhury</p>
