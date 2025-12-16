@@ -4,6 +4,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 const modelId = "gemini-2.5-flash";
+const imageModelId = "gemini-2.5-flash-image";
 
 export const generateTriviaQuestion = async (topic: string): Promise<string> => {
   try {
@@ -83,5 +84,26 @@ export const getChatResponse = async (history: { role: string; parts: { text: st
   } catch (error) {
     console.error("Chat error:", error);
     return "Connection to the neural net disrupted.";
+  }
+};
+
+export const generateFuturisticImage = async (prompt: string): Promise<string | null> => {
+  try {
+    const response = await ai.models.generateContent({
+      model: imageModelId,
+      contents: {
+        parts: [{ text: prompt }]
+      }
+    });
+
+    for (const part of response.candidates?.[0]?.content?.parts || []) {
+      if (part.inlineData) {
+        return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+      }
+    }
+    return null;
+  } catch (error) {
+    console.error("Image generation error:", error);
+    return null;
   }
 };
