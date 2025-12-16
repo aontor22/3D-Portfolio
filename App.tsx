@@ -9,6 +9,8 @@ import MouseTrail from './components/MouseTrail';
 import MatrixRain from './components/MatrixRain';
 import Typewriter from './components/Typewriter';
 import AIArtGallery from './components/AIArtGallery';
+import HireMeModal from './components/HireMeModal';
+import TerminalMode from './components/TerminalMode';
 import { Project } from './types';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Code, Palette, Cpu, Terminal, Mail, Linkedin, Github, Moon, Sun, Binary, Sparkles } from 'lucide-react';
@@ -363,8 +365,10 @@ const App: React.FC = () => {
         </div>
       </footer>
 
-      {/* Fixed Chatbot */}
+      {/* Fixed Components */}
       <AIChatbot />
+      <HireMeModal />
+      <TerminalMode />
     </div>
   );
 };
