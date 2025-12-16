@@ -111,25 +111,25 @@ const TerminalMode: React.FC = () => {
   return (
     <>
       {/* Terminal Trigger Button - Desktop Only */}
-      {/* Positioned to the right of the Hire Me button to avoid overlap */}
+      {/* Positioned ABOVE the Hire Me button (bottom-28) */}
       <motion.button
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-8 left-48 z-[70] hidden md:flex items-center gap-3 px-5 py-4 bg-black/80 backdrop-blur-md text-green-500 border border-green-500/30 rounded-full shadow-lg hover:shadow-[0_0_15px_rgba(34,197,94,0.3)] hover:bg-black/90 transition-all group font-mono text-sm"
+        className="fixed bottom-24 left-6 md:bottom-28 md:left-8 z-[70] hidden md:flex items-center gap-3 px-5 py-3 bg-black/80 backdrop-blur-md text-green-500 border border-green-500/30 rounded-full shadow-lg hover:shadow-[0_0_15px_rgba(34,197,94,0.3)] hover:bg-black/90 transition-all group font-mono text-xs md:text-sm"
         title="Open Developer Terminal (Press `)"
       >
-        <TerminalIcon size={16} className="group-hover:text-green-400" />
+        <TerminalIcon size={14} className="group-hover:text-green-400" />
         <span className="font-bold tracking-wider group-hover:text-white transition-colors">
-          <span className="text-green-500 mr-1">{'>'}</span>_DEV_MODE
+          <span className="text-green-500 mr-1">{'>'}</span>DEV_MODE
         </span>
         
         {/* Blinking Status Light */}
-        <span className="absolute top-0 right-0 -mt-1 -mr-1 flex h-3 w-3">
+        <span className="absolute top-0 right-0 -mt-1 -mr-1 flex h-2 w-2">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
         </span>
       </motion.button>
 

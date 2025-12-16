@@ -8,12 +8,11 @@ import LightningEffect from './components/LightningEffect';
 import MouseTrail from './components/MouseTrail';
 import MatrixRain from './components/MatrixRain';
 import Typewriter from './components/Typewriter';
-import AIArtGallery from './components/AIArtGallery';
 import HireMeModal from './components/HireMeModal';
 import TerminalMode from './components/TerminalMode';
 import { Project } from './types';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Code, Palette, Cpu, Terminal, Mail, Linkedin, Github, Moon, Sun, Binary, Sparkles } from 'lucide-react';
+import { ChevronDown, Code, Palette, Cpu, Terminal, Mail, Linkedin, Github, Moon, Sun, Binary } from 'lucide-react';
 
 const projects: Project[] = [
   {
@@ -143,7 +142,6 @@ const App: React.FC = () => {
                 <a href="#about" className="hover:text-cyan-600 dark:hover:text-white transition-colors">About</a>
                 <a href="#projects" className="hover:text-cyan-600 dark:hover:text-white transition-colors">Projects</a>
                 <a href="#skills" className="hover:text-cyan-600 dark:hover:text-white transition-colors">Skills</a>
-                <a href="#ai-art" className="hover:text-cyan-600 dark:hover:text-white transition-colors">AI Art</a>
                 <a href="#game" className="hover:text-cyan-600 dark:hover:text-white transition-colors text-cyan-600 dark:text-cyan-400">Playground</a>
             </div>
             <div className="flex gap-4 items-center">
@@ -304,22 +302,6 @@ const App: React.FC = () => {
             >
                 <SkillsSection />
             </motion.div>
-        </div>
-      </section>
-
-      {/* AI Art Section */}
-      <section id="ai-art" className="py-24 relative overflow-hidden bg-gray-100 dark:bg-black/20 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-            <div className="flex flex-col items-center mb-12">
-                <div className="p-3 bg-pink-600 rounded-lg shadow-lg mb-4">
-                    <Sparkles className="text-white" size={24} />
-                </div>
-                <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 dark:text-white">AI Art Generator</h2>
-                <p className="text-gray-600 dark:text-gray-400 mt-2 text-center max-w-xl">
-                    Visualize the future. Generate unique artwork using Gemini 2.5.
-                </p>
-            </div>
-            <AIArtGallery />
         </div>
       </section>
 

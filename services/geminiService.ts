@@ -4,7 +4,6 @@ import { GoogleGenAI, Type } from "@google/genai";
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 const modelId = "gemini-2.5-flash";
-const imageModelId = "gemini-2.5-flash-image";
 
 export const generateTriviaQuestion = async (topic: string): Promise<string> => {
   try {
@@ -90,15 +89,22 @@ export const getChatResponse = async (history: { role: string; parts: { text: st
 export const generateFuturisticImage = async (prompt: string): Promise<string | null> => {
   try {
     const response = await ai.models.generateContent({
-      model: imageModelId,
+      model: 'gemini-2.5-flash-image',
       contents: {
         parts: [{ text: prompt }]
+      },
+      config: {
+        imageConfig: {
+          aspectRatio: "1:1"
+        }
       }
     });
 
-    for (const part of response.candidates?.[0]?.content?.parts || []) {
-      if (part.inlineData) {
-        return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+    if (response.candidates?.[0]?.content?.parts) {
+      for (const part of response.candidates[0].content.parts) {
+        if (part.inlineData && part.inlineData.data) {
+          return `data:${part.inlineData.mimeType || 'image/png'};base64,${part.inlineData.data}`;
+        }
       }
     }
     return null;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, Mail, Calendar, X, Check, Copy, UserPlus, Briefcase, ExternalLink } from 'lucide-react';
+import { FileText, Mail, Calendar, X, Check, Copy, Briefcase, Download, ChevronRight } from 'lucide-react';
 
 const HireMeModal: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -108,7 +108,7 @@ const HireMeModal: React.FC = () => {
                         <p className="text-xs text-gray-500 dark:text-gray-400">PDF Format • 2.4 MB</p>
                       </div>
                    </div>
-                   <ExternalLink size={18} className="text-gray-300 group-hover:text-blue-500 transition-colors" />
+                   <Download size={18} className="text-gray-300 group-hover:text-blue-500 transition-colors" />
                 </a>
 
                 {/* Email Action */}
@@ -142,7 +142,7 @@ const HireMeModal: React.FC = () => {
                         <p className="text-xs text-gray-500 dark:text-gray-400">Direct via Email</p>
                       </div>
                    </div>
-                   <UserPlus size={18} className="text-gray-300 group-hover:text-purple-500 transition-colors" />
+                   <ChevronRight size={18} className="text-gray-300 group-hover:text-purple-500 transition-colors" />
                 </a>
 
               </div>
