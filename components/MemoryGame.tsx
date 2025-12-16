@@ -13,6 +13,39 @@ interface Card {
   isMatched: boolean;
 }
 
+const Confetti = () => {
+  const particles = Array.from({ length: 50 }).map((_, i) => ({
+    id: i,
+    x: (Math.random() - 0.5) * 600,
+    y: (Math.random() - 0.5) * 600,
+    color: ['#ef4444', '#22c55e', '#3b82f6', '#eab308', '#a855f7', '#06b6d4'][Math.floor(Math.random() * 6)],
+    scale: Math.random() * 0.5 + 0.5,
+    rotation: Math.random() * 360,
+    delay: Math.random() * 0.2
+  }));
+
+  return (
+    <div className="absolute inset-0 pointer-events-none flex items-center justify-center overflow-hidden z-0">
+      {particles.map((p) => (
+        <motion.div
+          key={p.id}
+          initial={{ x: 0, y: 0, opacity: 1, scale: 0 }}
+          animate={{ 
+            x: p.x, 
+            y: p.y, 
+            opacity: [1, 1, 0], 
+            scale: [0, p.scale, 0], 
+            rotate: p.rotation * 2 
+          }}
+          transition={{ duration: 2, ease: "easeOut", delay: p.delay }}
+          style={{ backgroundColor: p.color }}
+          className="absolute w-2 h-2 rounded-sm shadow-sm"
+        />
+      ))}
+    </div>
+  );
+};
+
 const MemoryGame: React.FC = () => {
   const [cards, setCards] = useState<Card[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
@@ -160,22 +193,65 @@ const MemoryGame: React.FC = () => {
         {/* Win Overlay */}
         <AnimatePresence>
         {gameWon && (
+            <>
+            {/* Screen Flash */}
             <motion.div 
+                key="flash"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 0.4, 0] }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1.5, times: [0, 0.2, 1] }}
+                className="fixed inset-0 bg-green-500/30 z-[90] pointer-events-none"
+            />
+            
+            <motion.div 
+                key="modal"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
-                className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-white/80 dark:bg-black/80 backdrop-blur-sm rounded-2xl"
+                className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-white/90 dark:bg-black/90 backdrop-blur-md rounded-2xl overflow-hidden"
             >
-                <CheckCircle2 size={64} className="text-green-500 mb-4" />
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">System Restored!</h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-6">Completed in {moves} moves</p>
-                <button 
+                <Confetti />
+                
+                <motion.div 
+                    initial={{ scale: 0, rotate: -180 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ type: "spring", damping: 10, stiffness: 100, delay: 0.1 }}
+                >
+                    <CheckCircle2 size={64} className="text-green-500 mb-4 drop-shadow-[0_0_20px_rgba(34,197,94,0.8)]" />
+                </motion.div>
+
+                <motion.h3 
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="text-2xl font-bold text-gray-900 dark:text-white mb-2 relative z-10"
+                >
+                    System Restored!
+                </motion.h3>
+                
+                <motion.p 
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="text-gray-600 dark:text-gray-400 mb-6 relative z-10"
+                >
+                    Completed in {moves} moves
+                </motion.p>
+                
+                <motion.button 
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.4 }}
                     onClick={startNewGame}
-                    className="flex items-center gap-2 px-6 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-full font-semibold transition-all shadow-lg"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-full font-semibold shadow-lg hover:shadow-cyan-500/50 relative z-10"
                 >
                     <RefreshCw size={18} /> Play Again
-                </button>
+                </motion.button>
             </motion.div>
+            </>
         )}
         </AnimatePresence>
       </div>
