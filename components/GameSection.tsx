@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import SnakeGame from './SnakeGame';
 import MemoryGame from './MemoryGame';
 import WhackABug from './WhackABug';
+import { playSound } from '../services/audioService';
 
 const GameSection: React.FC = () => {
   const [gameMode, setGameMode] = useState<'trivia' | 'snake' | 'memory' | 'whack'>('snake');
@@ -18,10 +19,18 @@ const GameSection: React.FC = () => {
 
   const topics = ['React', 'JavaScript', 'CSS', 'AI History', 'Video Games'];
 
+  const tabs = [
+    { id: 'snake', icon: Gamepad2, label: 'Snake', color: 'bg-cyan-600 shadow-[0_0_15px_rgba(8,145,178,0.5)]' },
+    { id: 'memory', icon: Grid3X3, label: 'Memory', color: 'bg-blue-600 shadow-[0_0_15px_rgba(37,99,235,0.5)]' },
+    { id: 'whack', icon: Bug, label: 'Bug Hunter', color: 'bg-red-600 shadow-[0_0_15px_rgba(220,38,38,0.5)]' },
+    { id: 'trivia', icon: Brain, label: 'Trivia', color: 'bg-purple-600 shadow-[0_0_15px_rgba(147,51,234,0.5)]' },
+  ] as const;
+
   const startGame = async () => {
     setLoading(true);
     setFeedback(null);
     setUserAnswer('');
+    playSound('start');
     const q = await generateTriviaQuestion(topic);
     setQuestion(q);
     setLoading(false);
@@ -34,6 +43,12 @@ const GameSection: React.FC = () => {
     const result = await checkTriviaAnswer(question, userAnswer);
     setFeedback(result);
     setLoading(false);
+    
+    if (result.correct) {
+      playSound('win');
+    } else {
+      playSound('wrong');
+    }
   };
 
   const renderGame = () => {
@@ -142,41 +157,39 @@ const GameSection: React.FC = () => {
 
         <div className="relative z-10 bg-white/80 dark:bg-[#0a0a0a]/80 rounded-[22px] p-6 md:p-8 min-h-[600px] flex flex-col transition-colors duration-300">
             
-            {/* Game Switcher - Responsive Grid for mobile */}
+            {/* Game Switcher - Animated Tabs */}
             <div className="flex flex-wrap justify-center gap-2 mb-8 bg-black/5 dark:bg-black/40 p-2 rounded-2xl w-full md:w-fit mx-auto border border-black/5 dark:border-white/10">
-                <button 
-                    onClick={() => setGameMode('snake')}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${gameMode === 'snake' ? 'bg-cyan-600 text-white shadow-lg' : 'text-gray-500 dark:text-gray-400 hover:text-cyan-600 dark:hover:text-white'}`}
-                >
-                    <Gamepad2 size={16} /> <span className="hidden md:inline">Snake</span>
-                </button>
-                <button 
-                    onClick={() => setGameMode('memory')}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${gameMode === 'memory' ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-white'}`}
-                >
-                    <Grid3X3 size={16} /> <span className="hidden md:inline">Memory</span>
-                </button>
-                 <button 
-                    onClick={() => setGameMode('whack')}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${gameMode === 'whack' ? 'bg-red-600 text-white shadow-lg' : 'text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-white'}`}
-                >
-                    <Bug size={16} /> <span className="hidden md:inline">Bug Hunter</span>
-                </button>
-                <button 
-                    onClick={() => setGameMode('trivia')}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${gameMode === 'trivia' ? 'bg-purple-600 text-white shadow-lg' : 'text-gray-500 dark:text-gray-400 hover:text-purple-600 dark:hover:text-white'}`}
-                >
-                    <Brain size={16} /> <span className="hidden md:inline">Trivia</span>
-                </button>
+                {tabs.map((tab) => (
+                    <button 
+                        key={tab.id}
+                        onClick={() => setGameMode(tab.id as any)}
+                        className={`relative flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors duration-200 outline-none ${
+                            gameMode === tab.id ? 'text-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                        }`}
+                    >
+                        {gameMode === tab.id && (
+                            <motion.div
+                                layoutId="activeGameTab"
+                                className={`absolute inset-0 rounded-xl ${tab.color}`}
+                                initial={false}
+                                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                            />
+                        )}
+                        <span className="relative z-10 flex items-center gap-2">
+                            <tab.icon size={16} /> 
+                            <span className="hidden md:inline">{tab.label}</span>
+                        </span>
+                    </button>
+                ))}
             </div>
 
             <AnimatePresence mode="wait">
                 <motion.div 
                     key={gameMode}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 1.05 }}
-                    transition={{ duration: 0.2 }}
+                    initial={{ opacity: 0, y: 10, filter: 'blur(8px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    exit={{ opacity: 0, y: -10, filter: 'blur(8px)' }}
+                    transition={{ duration: 0.3 }}
                     className="w-full flex-1 flex flex-col items-center justify-center"
                 >
                     {renderGame()}

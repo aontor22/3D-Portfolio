@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Atom, Database, Server, Cpu, Globe, Wifi, Lock, Code, RefreshCw, CheckCircle2, Trophy } from 'lucide-react';
+import { playSound } from '../services/audioService';
 
 // Card configuration
 const ICONS = [Atom, Database, Server, Cpu, Globe, Wifi, Lock, Code];
@@ -38,6 +39,7 @@ const MemoryGame: React.FC = () => {
   }, [gameWon, moves, bestScore]);
 
   const startNewGame = () => {
+    playSound('start');
     // Create pairs
     const initialCards: Card[] = [];
     ICONS.forEach((_, index) => {
@@ -59,6 +61,7 @@ const MemoryGame: React.FC = () => {
     // Block clicks if processing logic, card already flipped, or card matched
     if (isProcessing || flippedCards.includes(id) || cards.find(c => c.id === id)?.isMatched) return;
 
+    playSound('click');
     const newCards = [...cards];
     const cardIndex = newCards.findIndex(c => c.id === id);
     newCards[cardIndex].isFlipped = true;
@@ -81,6 +84,7 @@ const MemoryGame: React.FC = () => {
     if (card1 && card2 && card1.iconIndex === card2.iconIndex) {
       // Match found
       setTimeout(() => {
+        playSound('score');
         setCards(prev => prev.map(c => 
           currentFlipped.includes(c.id) ? { ...c, isMatched: true, isFlipped: true } : c
         ));
@@ -90,6 +94,7 @@ const MemoryGame: React.FC = () => {
         // Check win condition
         if (currentCards.filter(c => !c.isMatched).length <= 2) { 
              setGameWon(true);
+             playSound('win');
         }
       }, 500);
     } else {
@@ -153,10 +158,12 @@ const MemoryGame: React.FC = () => {
         </div>
 
         {/* Win Overlay */}
+        <AnimatePresence>
         {gameWon && (
             <motion.div 
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
                 className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-white/80 dark:bg-black/80 backdrop-blur-sm rounded-2xl"
             >
                 <CheckCircle2 size={64} className="text-green-500 mb-4" />
@@ -170,6 +177,7 @@ const MemoryGame: React.FC = () => {
                 </button>
             </motion.div>
         )}
+        </AnimatePresence>
       </div>
     </div>
   );

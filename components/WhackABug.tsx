@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bug, Play, Trophy, Terminal, Ban } from 'lucide-react';
+import { playSound } from '../services/audioService';
 
 const GRID_SIZE = 9;
 const GAME_DURATION = 30; // seconds
@@ -28,6 +29,7 @@ const WhackABug: React.FC = () => {
   }, [timeLeft, isPlaying]);
 
   const startGame = () => {
+    playSound('start');
     setScore(0);
     setTimeLeft(GAME_DURATION);
     setIsPlaying(true);
@@ -66,6 +68,8 @@ const WhackABug: React.FC = () => {
         localStorage.setItem('bugHighScore', newHigh.toString());
         return newHigh;
     });
+    
+    playSound('gameover');
   };
 
   // Cleanup on unmount
@@ -82,7 +86,7 @@ const WhackABug: React.FC = () => {
     if (index === activeHole) {
       setScore(s => s + 1);
       setActiveHole(null); // Instant hide
-      // Play sound effect here if desired
+      playSound('click');
     } else {
       setScore(s => Math.max(0, s - 1)); // Penalty for missing
     }
@@ -146,15 +150,20 @@ const WhackABug: React.FC = () => {
                             </motion.div>
                         )}
                     </AnimatePresence>
-                    
-                    {/* Click Feedback (optional simple flash) */}
                 </div>
             ))}
         </div>
 
         {/* Start Overlay */}
+        <AnimatePresence>
         {!isPlaying && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm rounded-2xl">
+            <motion.div 
+                initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                animate={{ opacity: 1, backdropFilter: "blur(4px)" }}
+                exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                transition={{ duration: 0.3 }}
+                className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/60 rounded-2xl"
+            >
                 {timeLeft === 0 && (
                     <div className="mb-4 text-center">
                         <h3 className="text-3xl font-bold text-white mb-1">Time's Up!</h3>
@@ -171,8 +180,9 @@ const WhackABug: React.FC = () => {
                     <Play size={24} fill="currentColor" />
                     {timeLeft === GAME_DURATION ? 'START HUNT' : 'PLAY AGAIN'}
                 </motion.button>
-            </div>
+            </motion.div>
         )}
+        </AnimatePresence>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Play, RotateCcw, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Pause, Trophy } from 'lucide-react';
+import { playSound } from '../services/audioService';
 
 // Game Constants
 const GRID_SIZE = 20;
@@ -44,6 +45,7 @@ const SnakeGame: React.FC = () => {
   }, []);
 
   const resetGame = () => {
+    playSound('start');
     setSnake([{ x: 10, y: 10 }, { x: 10, y: 11 }, { x: 10, y: 12 }]);
     setFood(generateFood([{ x: 10, y: 10 }, { x: 10, y: 11 }, { x: 10, y: 12 }]));
     setDirection('UP');
@@ -70,12 +72,14 @@ const SnakeGame: React.FC = () => {
       // Check collision with walls
       if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
         setGameOver(true);
+        playSound('gameover');
         return prevSnake;
       }
 
       // Check collision with self
       if (prevSnake.some(segment => segment.x === head.x && segment.y === head.y)) {
         setGameOver(true);
+        playSound('gameover');
         return prevSnake;
       }
 
@@ -83,6 +87,7 @@ const SnakeGame: React.FC = () => {
 
       // Check food collision
       if (head.x === food.x && head.y === food.y) {
+        playSound('score');
         setScore(s => {
           const newScore = s + 10;
           if (newScore > highScore) {
@@ -208,8 +213,15 @@ const SnakeGame: React.FC = () => {
         </div>
 
         {/* Overlays */}
+        <AnimatePresence>
         {(!hasStarted || gameOver || isPaused) && (
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center z-20 rounded-lg">
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+                className="absolute inset-0 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center z-20 rounded-lg"
+            >
                 {!hasStarted && (
                      <motion.button
                         whileHover={{ scale: 1.1 }}
@@ -242,8 +254,9 @@ const SnakeGame: React.FC = () => {
                         <button onClick={() => setIsPaused(false)} className="mt-4 px-4 py-2 bg-white/10 rounded-full text-sm hover:bg-white/20">Resume</button>
                     </div>
                 )}
-            </div>
+            </motion.div>
         )}
+        </AnimatePresence>
       </div>
 
       {/* Controls (Mobile Friendly) */}
