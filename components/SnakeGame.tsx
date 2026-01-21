@@ -205,24 +205,33 @@ const SnakeGame: React.FC = () => {
       {/* Game Board */}
       <div className="relative p-1 bg-gray-800 rounded-lg shadow-[0_0_40px_rgba(6,182,212,0.2)] border border-white/10">
         <div 
-            className="grid bg-black/90 rounded-md overflow-hidden relative"
+            className="grid bg-black/95 rounded-md overflow-hidden relative"
             style={{ 
                 gridTemplateColumns: `repeat(${GRID_SIZE}, 1fr)`,
                 width: 'min(85vw, 400px)',
                 height: 'min(85vw, 400px)',
             }}
         >
-            {/* Grid Lines (Dynamic opacity based on level) */}
+            {/* Smooth Grid Background */}
             <div 
-                className="absolute inset-0 grid grid-cols-[repeat(20,1fr)] grid-rows-[repeat(20,1fr)] pointer-events-none"
-                style={{ opacity: 0.05 + (level * 0.01) }}
+                className="absolute inset-0 pointer-events-none transition-all duration-700 overflow-hidden"
+                style={{ 
+                  backgroundImage: `
+                    linear-gradient(to right, rgba(6, 182, 212, ${0.05 + level * 0.01}) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(6, 182, 212, ${0.05 + level * 0.01}) 1px, transparent 1px)
+                  `,
+                  backgroundSize: `${100 / GRID_SIZE}% ${100 / GRID_SIZE}%`,
+                }}
             >
-                {Array.from({ length: GRID_SIZE * GRID_SIZE }).map((_, i) => (
-                    <div key={i} className="border-[0.5px] border-cyan-500/50"></div>
-                ))}
+                {/* Subtle scanning glow effect */}
+                <motion.div 
+                    animate={{ y: ['-100%', '200%'] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                    className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent pointer-events-none"
+                />
             </div>
 
-            {/* Snake & Food */}
+            {/* Snake & Food Rendering */}
             {Array.from({ length: GRID_SIZE * GRID_SIZE }).map((_, i) => {
                 const x = i % GRID_SIZE;
                 const y = Math.floor(i / GRID_SIZE);
@@ -231,6 +240,8 @@ const SnakeGame: React.FC = () => {
                 const snakeIndex = snake.findIndex(s => s.x === x && s.y === y);
                 const isSnake = snakeIndex !== -1;
                 const isHead = snakeIndex === 0;
+
+                if (!isSnake && !isFood) return <div key={i} />;
 
                 return (
                     <div key={i} className="relative w-full h-full">
